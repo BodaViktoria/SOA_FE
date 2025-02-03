@@ -1,0 +1,34 @@
+services:
+  host:
+    hostname: shell
+    build:
+      context: ./shell
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./shell:/app
+      - /app/node_modules   # Exclude node_modules from being replaced
+    depends_on:
+      - auth
+      - customer
+
+
+  auth:
+    hostname: auth
+    build:
+      context: ./auth
+    ports:
+      - "4201:4201"
+    volumes:
+      - ./auth:/app
+      - /app/node_modules   # Exclude node_modules from being replaced
+
+  customer:
+    hostname: customer
+    build:
+      context: ./customer
+    ports:
+      - "4202:4202"
+    volumes:
+      - ./customer:/app
+      - /app/node_modules   # Exclude node_modules from being replaced
