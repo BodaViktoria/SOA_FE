@@ -1,10 +1,11 @@
 const { shareAll, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 
 const AuthModuleFederationConfigPlugin = withModuleFederationPlugin({
+
   name: 'auth',
 
   exposes: {
-    './Component': './src/app/app.component.ts',
+    './LandingModule': './src/app/landing/landing.module.ts',
   },
 
   shared: {

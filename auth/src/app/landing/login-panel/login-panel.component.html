@@ -1,0 +1,16 @@
+<div class="div-login-panel">
+    <app-login-form *ngIf="showLoginForm"></app-login-form>
+    <app-register-form *ngIf="!showLoginForm"></app-register-form>
+  <button
+    *ngIf="showLoginForm"
+    (click)="goToRegister()"
+  >
+    Create account
+  </button>
+  <button
+    *ngIf="!showLoginForm"
+    (click)="goToLogin()"
+  >
+    Go to login
+  </button>
+</div>

@@ -1,0 +1,51 @@
+<div>
+  <form
+    id="login-form"
+    [formGroup]="loginUserDataFormGroup"
+    (ngSubmit)="loginUser()"
+  >
+    <br/>
+
+
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        formControlName="email"
+        (click)="resetWarnings()"
+      />
+    </div>
+    <br/>
+
+    <div class="form-field">
+      <label for="password">Password</label>
+      <div class="password-container">
+        <input
+          [type]="hidePassword ? 'password' : 'text'"
+          id="password"
+          placeholder="Enter your password"
+          formControlName="password"
+          (click)="resetWarnings()"
+        />
+        <button
+          type="button"
+          class="toggle-password"
+          (click)="hidePassword=!hidePassword"
+          aria-label="Toggle password visibility"
+        >
+          <i [class]="hidePassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
+      </div>
+    </div>
+    <br/>
+
+    <button type="submit">Login</button>
+    <br/><br/>
+
+    <div *ngIf="showPasswordErrorMessage" class="password-hint">
+      {{ errorMessage }}
+    </div>
+  </form>
+</div>

@@ -1,0 +1,86 @@
+<div>
+  <form
+    id="login-form"
+    [formGroup]="registerFormGroup"
+    (ngSubmit)="createAccount()"
+    (click)="resetWarnings()"
+  >
+    <br/>
+
+
+    <div class="form-field">
+      <label for="name">Name</label>
+      <input
+        type="name"
+        id="name"
+        placeholder="Enter your name"
+        formControlName="name"
+        (click)="resetWarnings()"
+      />
+    </div>
+    <br/>
+
+    <div class="form-field">
+      <label for="username">Username</label>
+      <input
+        type="username"
+        id="username"
+        placeholder="Enter your username"
+        formControlName="username"
+        (click)="resetWarnings()"
+      />
+    </div>
+    <br/>
+
+    <div class="form-field">
+      <label for="password1">Password</label>
+      <div class="password-container">
+        <input
+          id="password1"
+          [type]="hidePassword1 ? 'password' : 'text'"
+          placeholder="Enter your password"
+          formControlName="password1"
+          (click)="resetWarnings()"
+        />
+        <button
+          type="button"
+          class="toggle-password"
+          (click)="hidePassword1=!hidePassword1"
+          aria-label="Toggle password visibility"
+        >
+          <i [class]="hidePassword1 ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
+      </div>
+    </div>
+    <br/>
+
+    <div class="form-field">
+      <label for="password2">Password</label>
+      <div class="password-container">
+        <input
+          id="password2"
+          [type]="hidePassword2 ? 'password' : 'text'"
+          placeholder="Enter again your password"
+          formControlName="password2"
+          (click)="resetWarnings()"
+        />
+        <button
+          type="button"
+          class="toggle-password"
+          (click)="hidePassword2=!hidePassword2"
+          aria-label="Toggle password visibility"
+        >
+          <i [class]="hidePassword2 ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
+      </div>
+    </div>
+    <br/>
+
+    <button type="submit" id="form-button">Create account</button>
+    <br/><br/>
+
+    <div *ngIf="showCreateAccountErrorMessage" class="password-hint">
+      {{ errorMessage }}
+    </div>
+  </form>
+</div>

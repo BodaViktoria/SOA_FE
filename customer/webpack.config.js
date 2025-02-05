@@ -1,10 +1,11 @@
 const { shareAll, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 
-const TasksModuleFederationConfigPlugin = withModuleFederationPlugin({
+const CustomerModuleFederationConfigPlugin = withModuleFederationPlugin({
+
   name: 'customer',
 
   exposes: {
-    './Component': './src/app/app.component.ts',
+    './CustomerModule': './src/app/customer/customer.module.ts',
   },
 
   shared: {
@@ -13,5 +14,5 @@ const TasksModuleFederationConfigPlugin = withModuleFederationPlugin({
 
 });
 
-TasksModuleFederationConfigPlugin.output.publicPath = 'http://localhost:4202/'
-module.exports = TasksModuleFederationConfigPlugin;
+CustomerModuleFederationConfigPlugin.output.publicPath = 'http://localhost:4202/'
+module.exports = CustomerModuleFederationConfigPlugin;
