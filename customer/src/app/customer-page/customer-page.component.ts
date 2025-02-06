@@ -6,6 +6,7 @@ import { ItemDto } from '../customer/ItemDto';
 import { OrderDto } from '../customer/OrderDto';
 import { ItemListDto } from '../customer/ItemListDto';
 import {CookieService} from 'ngx-cookie-service';
+import { ReturnedOrderDto } from '../customer/ReturnedOrder';
 
 
 @Component({
@@ -20,9 +21,13 @@ export class CustomerPageComponent {
   private getAllRestaurantsURL= this.baseUrl + '/restaurants';
   private getAllItemsURL = 'http://localhost:8030/restaurant/api/item/restaurant';
   private orderURL = 'http://localhost:8030/customer/api/order';
+  private getOrdersForCustomerUrl = 'http://localhost:8030/customer/api/orders';
   public restaurants: RestaurantDTO[] = [];
+  public expandedRestaurantId: number | null = null; // Track which restaurant is expanded
   public items: ItemDto[] = []; 
   cart: ItemDto[] = []; // Stores selected items in cart
+  public userOrders: ReturnedOrderDto[] = [];
+  public showOrders: boolean = false; // Controls order visibility
 
   constructor(private httpClient: HttpClient, private cookieService: CookieService
   ) {
@@ -113,7 +118,7 @@ export class CustomerPageComponent {
     console.log(userId);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      userId: userId.toString(), // Sending userId as a request header
+      userId: userId, // Sending userId as a request header
     });
 
     return this.httpClient.post<OrderDto>(this.orderURL, itemListDto, { headers });
@@ -163,14 +168,62 @@ export class CustomerPageComponent {
     itemListDto.itemIds = itemList; // Now you can assign values
 
     this.cart = []; // Clear cart after order
+    console.log(itemListDto);
     this.order(itemListDto).subscribe({
       next: (data: any) => {
-        console.log(data);
+        let returnedOrder: ReturnedOrderDto = data;
+        alert(`Good news! Because of your customer rating, the final price of your order was only: `+ returnedOrder.finalPrice);
       },
       error: (err) => {
         console.error('Error fetching restaurants:', err);
       },
     });
+  }
+
+  toggleRestaurant(restaurant: RestaurantDTO): void {
+    if (this.expandedRestaurantId === restaurant.id) {
+      this.expandedRestaurantId = null; // Collapse if already expanded
+    } else {
+      this.expandedRestaurantId = restaurant.id;
+    }
+  }
+
+  fetchOrders(): void {
+    let token = this.cookieService.get('Token');
+    let userId = JSON.parse(atob(token.split('.')[1]))['userId'];
+    
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', userId: userId });
+
+    this.getAllOrdersForCustomer().subscribe({
+      next: (orders) => {
+        this.userOrders = orders;
+        this.showOrders = true;
+        console.log('User orders fetched:', orders);
+      },
+      error: (err) => console.error('Error fetching orders:', err),
+    });
+  }
+
+  public getAllOrdersForCustomer(): Observable<ReturnedOrderDto[]>{
+    let token = this.cookieService.get('Token');
+    console.log(token);
+    const base64Url: string = token.split('.')[1];
+    const base64: string = base64Url.replace('-', '+').replace('_', '/');
+    const decoded: string = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c: string) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(''),
+    );
+    
+    let tokenMap = JSON.parse(decoded);
+    console.log(tokenMap);
+    let userId = tokenMap['userId'];
+    console.log(userId);
+    const url = `${this.getOrdersForCustomerUrl}/${userId}`;
+    return this.httpClient.get<ReturnedOrderDto[]>(url);
   }
 
 }
